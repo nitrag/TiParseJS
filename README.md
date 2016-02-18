@@ -9,7 +9,25 @@ This is a spinoff of Aaron Saunders original wrapper, tiparse_mine [gist](https:
 - Download tiparsejs-wrapper.js and extract that to your project's lib folder.
 - Add your keys to config.json
 ```
-test
+{
+	"global": {
+	    "parseOptions": {
+	      "facebookAppId" : "<yourkeyhere>",
+	      "applicationId": "<yourkeyhere>",
+	      "javascriptkey": "<yourkeyhere>",
+	      "restKey": "<yourkeyhere>"
+	    },
+	},
+	"env:development": {},
+	"env:test": {},
+	"env:production": {},
+	"os:android": {},
+	"os:blackberry": {},
+	"os:ios": {},
+	"os:mobileweb": {},
+	"os:windows": {},
+	"dependencies": {}
+}
 ```
 - In your main controller (index.js) of your app, require the module
 ```
