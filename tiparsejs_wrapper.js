@@ -18,6 +18,71 @@ var TiParse = function(options) {
   TiFacebook = require('facebook');
   TiFacebook.appid = options.facebookAppId;
   
+  FB = {
+    provider : {
+
+      authenticate : function(options) {
+        var self = this;
+        TiFacebook.forceDialogAuth = false;
+        TiFacebook.authorize();
+
+        TiFacebook.addEventListener('login', function(response) {
+
+          if (response.success) {
+             if (options.success) {
+                options.success(self, {
+                    id :  JSON.parse(response.data).id,
+                    access_token : TiFacebook.accessToken,
+                    expiration_date : (new Date(TiFacebook.expirationDate)).toJSON()
+              });
+
+            }
+          } else {
+            if (options.error) {
+              options.error(self, response);
+            }
+          }
+        });
+
+      },
+      restoreAuthentication : function(authData) {
+        var authResponse;
+        if (authData) {
+          authResponse = {
+            userID : authData.id,
+            accessToken : authData.access_token,
+            expiresIn : (Parse._parseDate(authData.expiration_date).getTime() - (new Date()).getTime()) / 1000
+          };
+        } else {
+          authResponse = {
+            userID : null,
+            accessToken : null,
+            expiresIn : null
+          };
+        }
+        //FB.Auth.setAuthResponse(authResponse);
+        if (!authData) {
+          TiFacebook.logout();
+        }
+        return true;
+      },
+      getAuthType : function() {
+        return "facebook";
+      },
+      deauthenticate : function() {
+        this.restoreAuthentication(null);
+      }
+    },
+    init : function() {
+      Ti.API.debug("called FB.init()");
+    },
+    login : function() {
+      Ti.API.debug("called FB.login()");
+    },
+    logout : function() {
+      Ti.API.debug("called FB.logout()");
+    }
+  };
  
 	/**
 	 Save Eventually - Work in Progress!
