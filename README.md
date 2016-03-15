@@ -56,5 +56,3 @@ require('tiparsejs_wrapper')(Alloy.CFG.parseOptions);
 - Push 
   - For iOS I think I can include this inside the wrapper, standby
   - for Android, see TiParse by rebelcorp [here](https://github.com/timanrebel/Parse/tree/master/android)
-- File Upload
-  - I have to convert a REST script, standby
