@@ -31,60 +31,66 @@ var XHR = null;
 const RESTController = {
   ajax(method: string, url: string, data: any, headers?: any) {
     var promise = new ParsePromise();
-    
+
     var attempts = 0;
-    
+
     var dispatch = function() {
-      
+
       var handled = false;
 
 	    var xhr = Ti.Network.createHTTPClient({
 	      timeout : 15000
 	    });
-	    xhr.onreadystatechange = function() {
-	      if (4 === xhr.readyState) {
-	        if (handled)
-	          return;
-	        handled = !0;
-	
-	        if (xhr.status >= 200 && xhr.status < 300) {
-	          var response;
-	          try {
-	            response = JSON.parse(xhr.responseText);
-	          } catch (e) {
-	            promise.reject(e.toString());
-	          }
-	          if (response) {
-	            promise.resolve(response, xhr.status, xhr);
-	          }
-	        } else if (xhr.status >= 500 || xhr.status === 0) { // retry on 5XX or node-xmlhttprequest error
-	          if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
-	            // Exponentially-growing random delay
-	            var delay = Math.round(
-	              Math.random() * 125 * Math.pow(2, attempts)
-	            );
-	            setTimeout(dispatch, delay);
-	          } else if (xhr.status === 0) {
-	            promise.reject('Unable to connect to the Parse API');
-	          } else {
-	            // After the retry limit is reached, fail
-	            promise.reject(xhr);
-	          }
-	        } else {
-	          promise.reject(xhr);
-	        }
-	      }
+	    xhr.onload = function(e) {
+        if (handled)
+          return;
+        handled = !0;
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var response;
+          try {
+            response = JSON.parse(xhr.responseText);
+          } catch (e) {
+            // promise.reject(e.toString());
+            promise.resolve(xhr.responseText, xhr.status, xhr);
+          }
+          if (response) {
+            promise.resolve(response, xhr.status, xhr);
+          }
+        } else if (xhr.status >= 500 || xhr.status === 0) { // retry on 5XX or node-xmlhttprequest error
+          if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
+            // Exponentially-growing random delay
+            var delay = Math.round(
+              Math.random() * 125 * Math.pow(2, attempts)
+            );
+            setTimeout(dispatch, delay);
+          } else if (xhr.status === 0) {
+            promise.reject('Unable to connect to the Parse API');
+          } else {
+            // After the retry limit is reached, fail
+            promise.reject(xhr);
+          }
+        } else {
+          promise.reject(xhr);
+        }
 	    };
+      xhr.onerror = function(e) {
+        if (handled)
+          return;
+        handled = !0;
+
+        promise.reject(e.error);
+      };
 	    xhr.open(method, url, !0);
 	    xhr.setRequestHeader("Content-Type", "text/plain");
 	    headers = headers || {};
 		for (var h in headers) {
 			xhr.setRequestHeader(h, headers[h]);
-		}	
+		}
 	    xhr.send(data);
 	}
 	dispatch();
-	
+
     return promise;
   },
 
