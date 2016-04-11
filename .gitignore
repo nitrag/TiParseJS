@@ -1,1 +1,3 @@
 .DS_Store
+node_modules
+Parse-SDK-JS-master/lib
