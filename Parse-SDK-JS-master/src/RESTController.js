@@ -79,7 +79,7 @@ const RESTController = {
           return;
         handled = !0;
 
-        promise.reject(e.error);
+        promise.reject(xhr);
       };
 	    xhr.open(method, url, !0);
 	    xhr.setRequestHeader("Content-Type", "text/plain");
