@@ -39,7 +39,7 @@ const RESTController = {
       var handled = false;
 
 	    var xhr = Ti.Network.createHTTPClient({
-	      timeout : 15000
+	      timeout : 120000
 	    });
 	    xhr.onload = function(e) {
         if (handled)
@@ -79,7 +79,7 @@ const RESTController = {
           return;
         handled = !0;
 
-        promise.reject(e.error);
+        promise.reject(xhr);
       };
 	    xhr.open(method, url, !0);
 	    xhr.setRequestHeader("Content-Type", "text/plain");
@@ -115,7 +115,10 @@ const RESTController = {
     }
 
     payload._ApplicationId = CoreManager.get('APPLICATION_ID');
-    payload._JavaScriptKey = CoreManager.get('JAVASCRIPT_KEY');
+    let jsKey = CoreManager.get('JAVASCRIPT_KEY');
+    if (jsKey) {
+      payload._JavaScriptKey = jsKey;
+    }
     payload._ClientVersion = CoreManager.get('VERSION');
 
     var useMasterKey = options.useMasterKey;
