@@ -25,7 +25,7 @@ var Parse = {
    * You can get your keys from the Data Browser on parse.com.
    * @method initialize
    * @param {String} applicationId Your Parse Application ID.
-   * @param {String} javaScriptKey Your Parse JavaScript Key.
+   * @param {String} javaScriptKey (optional) Your Parse JavaScript Key (Not needed for parse-server)
    * @param {String} masterKey (optional) Your Parse Master Key. (Node.js only!)
    * @static
    */
@@ -80,6 +80,14 @@ Object.defineProperty(Parse, 'serverURL', {
     CoreManager.set('SERVER_URL', value);
   }
 });
+Object.defineProperty(Parse, 'liveQueryServerURL', {
+  get() {
+    return CoreManager.get('LIVEQUERY_SERVER_URL');
+  },
+  set(value) {
+    CoreManager.set('LIVEQUERY_SERVER_URL', value);
+  }
+});
 /** End setters **/
 
 Parse.ACL = require('./ParseACL');
@@ -110,6 +118,8 @@ Parse.Role = require('./ParseRole');
 Parse.Session = require('./ParseSession');
 Parse.Storage = require('./Storage');
 Parse.User = require('./ParseUser');
+Parse.LiveQuery = require('./ParseLiveQuery');
+Parse.LiveQueryClient = require('./LiveQueryClient');
 
 Parse._request = function(...args) {
   return CoreManager.getRESTController().request.apply(null, args);
