@@ -39,7 +39,7 @@ const RESTController = {
       var handled = false;
 
 	    var xhr = Ti.Network.createHTTPClient({
-	      timeout : 15000
+	      timeout : 120000
 	    });
 	    xhr.onload = function(e) {
         if (handled)
