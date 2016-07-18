@@ -19,26 +19,25 @@ var requestedPermissions;
 var initOptions;
 var provider = {
 	authenticate : function(options) {
-        var self = this;
-        TiFacebook.forceDialogAuth = false;
-        TiFacebook.authorize();
+    var self = this;
+    TiFacebook.forceDialogAuth = false;
+    TiFacebook.authorize();
 
-		TiFacebook.addEventListener('login', function(response) {
-
-			if (response.success) {
-			     if (options.success) {
-			        options.success(self, {
-			            id :  JSON.parse(response.data).id,
-			            access_token : TiFacebook.accessToken,
-			            expiration_date : (new Date(TiFacebook.expirationDate)).toJSON()
-			      });
-			
-			    }
-			  } else {
-			    if (options.error) {
-			      options.error(self, response);
-			    }
-			  }
+    TiFacebook.addEventListener('login', function(response) {
+      if (response.success) {
+		     if (options.success) {
+		        options.success(self, {
+		            id :  response.uid,
+		            access_token : TiFacebook.accessToken,
+		            expiration_date : (new Date(TiFacebook.expirationDate)).toJSON()
+		      });
+		
+		    }
+		  } else {
+		    if (options.error) {
+		      options.error(self, response);
+		    }
+		  }
 		});
 
 	},
@@ -48,7 +47,7 @@ var provider = {
 			authResponse = {
 				userID : authData.id,
 				accessToken : authData.access_token,
-				expiresIn : (Parse._parseDate(authData.expiration_date).getTime() - (new Date()).getTime()) / 1000
+				expiresIn : (parseDate(authData.expiration_date).getTime() - (new Date()).getTime() / 1000)
 			};
 	    } else {
 	      authResponse = {
@@ -104,7 +103,7 @@ var FacebookUtils = {
    *   explicitly if this behavior is required by your application.
    */
   init(options) {
-    if (typeof FB === 'undefined') {
+    if (typeof TiFacebook === 'undefined') {
       throw new Error(
         'The Facebook JavaScript SDK must be loaded before calling init.'
       );
@@ -123,7 +122,7 @@ var FacebookUtils = {
         ' FB.getLoginStatus() explicitly if you require this behavior.');
     }
     initOptions.status = false;
-    FB.init(initOptions);
+    //TiFacebook.init(initOptions); //doesn't work or not needed with ti.facebook module
     ParseUser._registerAuthenticationProvider(provider);
     initialized = true;
   },
