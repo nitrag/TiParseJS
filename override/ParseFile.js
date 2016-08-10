@@ -98,7 +98,7 @@ export default class ParseFile {
         file: data,
         type: specifiedType
       };
-    } else if(data.apiName && (data.apiName == 'Ti.Blob' || data.apiName == 'Ti.Filesystem.File')){ //For Titanium File  or Blob
+    } else if(data && data.apiName && (data.apiName == 'Ti.Blob' || data.apiName == 'Ti.Filesystem.File')){ //For Titanium File  or Blob
       this._source = {
         format: 'file',
         file: data,
